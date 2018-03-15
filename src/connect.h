@@ -29,6 +29,7 @@ class DoConnect{
 		//muter read write
 		void CreateIN();
 		void CreateOUT();
+		static int DoConnect::prior_read(resmgr_context_t *ctp, io_read_t *msg, RESMGR_OCB_T *ocb)
 
 	public:
 		DoConnect();
