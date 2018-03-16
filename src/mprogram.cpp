@@ -35,6 +35,10 @@ using namespace DataSend;
 		return buf;
 	}
 
+	void Data::ResourseToQueue(char *R)
+	{
+
+	}
 
 		
 	

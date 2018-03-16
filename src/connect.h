@@ -7,9 +7,7 @@ namespace DataSend{
 class Data;
 class DoConnect{
 
-		pthread_t ThreadsIn[3];
-		pthread_t ThreadsOut[3];
-		pthread_mutex_t Mutex;
+
 		//IN
 		resmgr_attr_t resmgr_attr_IN;
 		dispatch_t *dpp_IN;
@@ -29,9 +27,11 @@ class DoConnect{
 		//muter read write
 		void CreateIN();
 		void CreateOUT();
-		static int DoConnect::prior_read(resmgr_context_t *ctp, io_read_t *msg, RESMGR_OCB_T *ocb)
-
+		static int DoConnect::prior_read(resmgr_context_t *ctp, io_read_t *msg, RESMGR_OCB_T *ocb);
+		static int DoConnect::prior_write(resmgr_context_t *ctp, io_write_t *msg, RESMGR_OCB_T *ocb);
 	public:
+		Data *D;
+
 		DoConnect();
 		~DoConnect();
 /*

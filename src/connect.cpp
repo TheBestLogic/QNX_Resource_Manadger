@@ -79,7 +79,7 @@ void DoConnect::~DoConnect()
 
 }
 
-static int DoConnect::prior_read(resmgr_context_t *ctp, io_read_t *msg, RESMGR_OCB_T *ocb)
+static int DoConnect::prior_write(resmgr_context_t *ctp, io_write_t *msg, RESMGR_OCB_T *ocb)
 {
 	 static bool odd = true;
  	int status = iofunc_read_verify(ctp, msg, ocb, NULL);
@@ -97,6 +97,27 @@ static int DoConnect::prior_read(resmgr_context_t *ctp, io_read_t *msg, RESMGR_O
  	}
  	else
  		MsgReply(ctp->rcvid, EOK, NULL, 0);
+ 	odd = !odd;
+ 	return _RESMGR_NOREPLY;
+}
+
+static int DoConnect::prior_read(resmgr_context_t *ctp, io_read_t *msg, RESMGR_OCB_T *ocb)
+{
+	 static bool odd = true;
+ 	int status = iofunc_write_verify(ctp, msg, ocb, NULL);
+ 	if (status != EOK)
+ 		return status;
+ 	if (msg->i.xtype & _IO_XTYPE_MASK != _ID_XTYPE_NONE)
+  		return ENOSYS;
+ 	if (odd)
+ 	{
+  		//
+  		sprintf(/*ukazatel na govno*/, "/*tip govna*/", /*soderjimoe govna*/);//suda kidaem govno
+  		MsgSend(ctp->rcvid, /*status no budet dlina govna +1*/, /*ukazatel na govno*/, /*dlina govna +1*/);
+ 	}
+ 	else
+ 		MsgReply(ctp->rcvid, EOK, NULL, 0);
+ 	//
  	odd = !odd;
  	return _RESMGR_NOREPLY;
 }

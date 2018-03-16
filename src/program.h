@@ -17,6 +17,7 @@ class Data{
 		~Data();
 		void GetData(int In);
 		int SendData();
+		void ResourseToQueue(char *R);
 };
  	
 
