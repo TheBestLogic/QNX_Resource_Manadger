@@ -23,13 +23,10 @@ using namespace DataSend;
 	{
 		pthread_mutex_lock( &Mutex );
 		DataQueue.push( In );
+		//sovat v resurci
 		pthread_mutex_unlock( &Mutex );
 	}
 
-	void Data::ResourseInform()
-	{
-
-	}
 
 
 
@@ -38,6 +35,7 @@ using namespace DataSend;
 		pthread_mutex_lock( &Mutex );
 		std::string buf = DataQueue.front();
 		DataQueue.pop();
+		//sovat v resurci
 		pthread_mutex_unlock( &Mutex );
 		return buf;
 	}

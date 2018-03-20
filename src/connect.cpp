@@ -34,8 +34,8 @@ void DoConnect::CreateIN()
 	 	// устройством.
 	 	iofunc_attr_init(&attr_IN, S_IFNAM | 0666, 0, 0);
 	 	// здесь создается путевое имя для менеджера
-	 	id = resmgr_attach(dpp_IN, &resmgr_attr_IN, "/dev/prior_IN", _FTYPE_ANY, 0, &connect_funcs_IN, &io_funcs_IN, &attr_IN);
-		if (id == -1)
+	 	id_IN = resmgr_attach(dpp_IN, &resmgr_attr_IN, "/dev/prior_IN", _FTYPE_ANY, 0, &connect_funcs_IN, &io_funcs_IN, &attr_IN);
+		if (id_IN == -1)
 	 		throw "\"id = resmgr_attach(dpp_IN, &resmgr_attr_IN, \"/dev/prior_IN\", _FTYPE_ANY, 0, &connect_funcs_IN, &io_funcs_IN, &attr_IN)\" - failed";
 	 	ctp_IN = dispatch_context_alloc(dpp_IN);
 }
@@ -62,38 +62,38 @@ void DoConnect::CreateOUT()
 		 	// устройством.
 		 	iofunc_attr_init(&attr_OUT, S_IFNAM | 0666, 0, 0);
 		 	// здесь создается путевое имя для менеджера
-		 	id = resmgr_attach(dpp_OUT, &resmgr_attr_OUT, "/dev/prior_OUT", _FTYPE_ANY, 0, &connect_funcs_OUT, &io_funcs_OUT, &attr_OUT);
-			if (id == -1)
+		 	id_OUT = resmgr_attach(dpp_OUT, &resmgr_attr_OUT, "/dev/prior_OUT", _FTYPE_ANY, 0, &connect_funcs_OUT, &io_funcs_OUT, &attr_OUT);
+			if (id_OUT == -1)
 		 		throw "\"id = resmgr_attach(dpp_OUT, &resmgr_attr_OUT, \"/dev/prior_OUT\", _FTYPE_ANY, 0, &connect_funcs_OUT, &io_funcs_OUT, &attr_OUT)\" - failed";
 		 	ctp_OUT = dispatch_context_alloc(dpp_OUT);
 }
 
-void DoConnect::DoConnect()
+DoConnect::DoConnect()
 {
 	DoConnect::CreateIN();
 	DoConnect::CreateOUT();
 }
 
-void DoConnect::~DoConnect()
+DoConnect::~DoConnect()
 {
 
 }
 
-static int DoConnect::prior_write(resmgr_context_t *ctp, io_write_t *msg, RESMGR_OCB_T *ocb)
+int DoConnect::prior_write(resmgr_context_t *ctp, io_write_t *msg, RESMGR_OCB_T *ocb)
 {
 	 static bool odd = true;
- 	int status = iofunc_read_verify(ctp, msg, ocb, NULL);
+ 	int status = iofunc_write_verify(ctp, msg, ocb, NULL);
  	if (status != EOK)
  		return status;
- 	if (msg->i.xtype & _IO_XTYPE_MASK != _ID_XTYPE_NONE)
-  		return ENOSYS;
+ 	/*if (msg->i.xtype & _IO_XTYPE_MASK != _ID_XTYPE_NONE)
+  		return ENOSYS;*/
  	if (odd)
  	{
   		struct sched_param 		param;
   		sched_getparam(0, &param);
   		static char rbuf[4];
   		sprintf(rbuf, "%d ", param.sched_curpriority);
-  		MsgReply(ctp->rcvid, strlen(rbuf) + 1, rbuf, strlen(rbuf) + 1);
+  		MsgReply(ctp->rcvid, strlen(rbuf) + 1, rbuf, strlen(rbuf) + 1);//MsgRead
  	}
  	else
  		MsgReply(ctp->rcvid, EOK, NULL, 0);
@@ -101,14 +101,14 @@ static int DoConnect::prior_write(resmgr_context_t *ctp, io_write_t *msg, RESMGR
  	return _RESMGR_NOREPLY;
 }
 
-static int DoConnect::prior_read(resmgr_context_t *ctp, io_read_t *msg, RESMGR_OCB_T *ocb)
+int DoConnect::prior_read(resmgr_context_t *ctp, io_read_t *msg, RESMGR_OCB_T *ocb)
 {
 	 static bool odd = true;
- 	int status = iofunc_write_verify(ctp, msg, ocb, NULL);
+ 	int status = iofunc_read_verify(ctp, msg, ocb, NULL);
  	if (status != EOK)
  		return status;
- 	if (msg->i.xtype & _IO_XTYPE_MASK != _ID_XTYPE_NONE)
-  		return ENOSYS;
+ 	/*if (msg->i.xtype & _IO_XTYPE_MASK != _ID_XTYPE_NONE)
+  		return ENOSYS;*/
  	if (odd)
  	{
   		//

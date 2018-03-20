@@ -18,8 +18,6 @@ class Data{
 		Data();
 		~Data();
 		void GetData(std::string In);
-		std::string SendData();
-		void ResourseInform();
 		std::string SendData(  );
 };
  	

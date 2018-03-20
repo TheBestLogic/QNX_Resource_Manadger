@@ -1,5 +1,10 @@
 #pragma once
 #include "program.h"
+#include <errno.h>
+#include <iostream>
+#include <stddef.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include <sys/iofunc.h>
 #include <sys/dispatch.h>
 
@@ -27,8 +32,9 @@ class DoConnect{
 		//muter read write
 		void CreateIN();
 		void CreateOUT();
-		static int DoConnect::prior_read(resmgr_context_t *ctp, io_read_t *msg, RESMGR_OCB_T *ocb);
-		static int DoConnect::prior_write(resmgr_context_t *ctp, io_write_t *msg, RESMGR_OCB_T *ocb);
+
+		static int prior_read(resmgr_context_t *ctp, io_read_t *msg, RESMGR_OCB_T *ocb);
+		static int prior_write(resmgr_context_t *ctp, io_write_t *msg, RESMGR_OCB_T *ocb);
 	public:
 		Data *D;
 
