@@ -121,3 +121,42 @@ int DoConnect::prior_read(resmgr_context_t *ctp, io_read_t *msg, RESMGR_OCB_T *o
  	odd = !odd;
  	return _RESMGR_NOREPLY;
 }
+
+
+int DoConnect::threadOut()
+{
+	while( 1 )
+	{
+	    ctp_ret_OUT = dispatch_block( ctp_OUT );
+	    if( ctp_ret_OUT )
+	    {
+	       dispatch_handler( ctp_OUT );
+	    }
+	    else
+	    {
+	        fprintf( stderr, "dispatch_block() failed: %s\n",
+	        strerror( errno ) );
+	        return EXIT_FAILURE;
+	    }
+	}
+	return EXIT_SUCCESS;
+}
+
+int DoConnect::threadIn()
+{
+	while( 1 )
+	{
+	    ctp_ret_IN = dispatch_block( ctp_IN );
+	    if( ctp_ret_IN )
+	    {
+	       dispatch_handler( ctp_IN );
+	    }
+	    else
+	    {
+	        fprintf( stderr, "dispatch_block() failed: %s\n",
+	        strerror( errno ) );
+	        return EXIT_FAILURE;
+	    }
+	}
+	return EXIT_SUCCESS;
+}
