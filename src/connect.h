@@ -10,6 +10,9 @@
 
 namespace DataSend{
 class Data;
+static int prior_read(resmgr_context_t *ctp, io_read_t *t, RESMGR_OCB_T *ocb);
+static int prior_write(resmgr_context_t *ctp, io_write_t *t, RESMGR_OCB_T *ocb);
+
 class DoConnect{
 
 
@@ -27,14 +30,13 @@ class DoConnect{
 		void CreateOUT();
 		int threadIn();
 		int threadOut();
-		static int prior_read(resmgr_context_t *ctp, io_read_t *msg, RESMGR_OCB_T *ocb);
-		static int prior_write(resmgr_context_t *ctp, io_write_t *msg, RESMGR_OCB_T *ocb);
+
 	public:
 		Data *D;
 
 		DoConnect();
 		~DoConnect();
-	friend class DataSend;
+	//friend class DataSend;
 /*
  * metods
  * connect to file read(mutex)
@@ -43,5 +45,6 @@ class DoConnect{
  */
 
 };
+DoConnect doConn;
 
 }

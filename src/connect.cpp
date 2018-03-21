@@ -2,6 +2,8 @@
 using namespace std;
 using namespace DataSend;
 
+//extern DoConnect doConn;
+
 void DoConnect::CreateIN()
 {
 		/*
@@ -79,7 +81,7 @@ DoConnect::~DoConnect()
 
 }
 
-int DoConnect::prior_write(resmgr_context_t *ctp, io_write_t *msg, RESMGR_OCB_T *ocb)
+int prior_write(resmgr_context_t *ctp,  io_read_t *t,RESMGR_OCB_T *ocb)
 {
 	 static bool odd = true;
  	int status = iofunc_write_verify(ctp, msg, ocb, NULL);
@@ -91,8 +93,6 @@ int DoConnect::prior_write(resmgr_context_t *ctp, io_write_t *msg, RESMGR_OCB_T 
  	{
   		struct sched_param 		param;
   		sched_getparam(0, &param);
-  		static char rbuf[4];
-  		sprintf(rbuf, "%d ", param.sched_curpriority);
   		MsgReply(ctp->rcvid, strlen(rbuf) + 1, rbuf, strlen(rbuf) + 1);//MsgRead
  	}
  	else
@@ -101,19 +101,19 @@ int DoConnect::prior_write(resmgr_context_t *ctp, io_write_t *msg, RESMGR_OCB_T 
  	return _RESMGR_NOREPLY;
 }
 
-int DoConnect::prior_read(resmgr_context_t *ctp, io_read_t *msg, RESMGR_OCB_T *ocb)
+int prior_read(resmgr_context_t *ctp, io_write_t *t,  RESMGR_OCB_T *ocb)
 {
-	 static bool odd = true;
- 	int status = iofunc_read_verify(ctp, msg, ocb, NULL);
- 	if (status != EOK)
- 		return status;
+	string str = doConn.D->SendData();
+	static bool odd = true;
  	/*if (msg->i.xtype & _IO_XTYPE_MASK != _ID_XTYPE_NONE)
   		return ENOSYS;*/
  	if (odd)
  	{
-  		//
-  		sprintf(/*ukazatel na govno*/, "/*tip govna*/", /*soderjimoe govna*/);//suda kidaem govno
-  		MsgSend(ctp->rcvid, /*status no budet dlina govna +1*/, /*ukazatel na govno*/, /*dlina govna +1*/);
+  		if( MsgSend( ctp->rcvid, &str, str.length(), NULL, 0 ) == -1 )
+  		{
+  		    fprintf( stderr, "Unable to MsgSend() to server: %s\n", strerror( errno ) );
+  		    return EXIT_FAILURE;
+  		}
  	}
  	else
  		MsgReply(ctp->rcvid, EOK, NULL, 0);

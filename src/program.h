@@ -13,7 +13,7 @@ namespace DataSend{
 class Data{
 		pthread_mutex_t Mutex;
 		queue<string> DataQueue;
-	friend class DoConnect;
+	//friend class DoConnect;
 	public:
 		Data();
 		~Data();
